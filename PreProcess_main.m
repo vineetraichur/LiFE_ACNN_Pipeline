@@ -26,3 +26,12 @@ main(config)
 % config.bvals = 'C:\Users\vineetr\Google Drive\ACNN\LiFE_Libraries\life_demo_data\data\diffusion\life_demo_scan1_subject1_b2000_150dirs_stanford.bvals';
 %
 % main(config)
+
+%% Step 3: app-freesurfer-master
+% Obtained from: https://github.com/brain-life/app-freesurfer/blob/master/template.pbs
+
+%% Step 4: app-tracking-master
+% Obtained from: https://github.com/brain-life/app-tracking/blob/master/main.m
+
+%% Step 5: app-life-master
+% Obtained from: https://github.com/brain-life/app-life/blob/master/main.m

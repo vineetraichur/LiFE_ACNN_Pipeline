@@ -1,0 +1,7 @@
+{ 
+    "t1": "C:\Users\vineetr\Google Drive\ACNN\LiFE_Libraries\life_demo_data\data\anatomy\life_demo_anatomy_t1w_stanford.nii.gz",
+    "coords": [[0,0,0], [0, -16, 0], [0, -8, 40]],
+    "dwi": "C:\Users\vineetr\Google Drive\ACNN\LiFE_Libraries\life_demo_data\data\diffusion\life_demo_scan1_subject1_b2000_150dirs_stanford.nii.gz",
+    "bvecs": "C:\Users\vineetr\Google Drive\ACNN\LiFE_Libraries\life_demo_data\data\diffusion\life_demo_scan1_subject1_b2000_150dirs_stanford.bvecs",
+    "bvals": "C:\Users\vineetr\Google Drive\ACNN\LiFE_Libraries\life_demo_data\data\diffusion\life_demo_scan1_subject1_b2000_150dirs_stanford.bvals"
+}

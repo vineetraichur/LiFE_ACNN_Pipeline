@@ -22,6 +22,7 @@ config = loadjson('config.json');
 
 %% Step 2: app-dtiinit-master
 addpath(genpath('C:\Users\vineetr\Google Drive\ACNN\Pre-process_DiffData\app-dtiinit-master'))
+config.t1 = 'C:\Users\vineetr\Google Drive\ACNN\LiFE_Libraries\life_demo_data\data\anatomy\life_demo_anatomy_t1w_stanford.nii.gz';
 config.dwi = 'C:\Users\vineetr\Google Drive\ACNN\LiFE_Libraries\life_demo_data\data\diffusion\life_demo_scan1_subject1_b2000_150dirs_stanford.nii.gz';
 config.bvecs = 'C:\Users\vineetr\Google Drive\ACNN\LiFE_Libraries\life_demo_data\data\diffusion\life_demo_scan1_subject1_b2000_150dirs_stanford.bvecs';
 config.bvals = 'C:\Users\vineetr\Google Drive\ACNN\LiFE_Libraries\life_demo_data\data\diffusion\life_demo_scan1_subject1_b2000_150dirs_stanford.bvals';

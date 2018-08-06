@@ -1,0 +1,13 @@
+{ 
+    "t1": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step1_Autoalign/t1.nii.gz",
+    "coords": [[0,0,0], [0, -16, 0], [0, -8, 40]],
+    "dwi": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step2_RemoveArtifacts/dwi_aligned_trilin_noMEC.nii.gz",
+    "bvecs": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step2_RemoveArtifacts/dwi_aligned_trilin_noMEC.bvecs",
+    "bvals": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step2_RemoveArtifacts/dwi_aligned_trilin_noMEC.bvals",
+    "lmax":"8",
+    "fibers":"500000",
+    "fibers_max":"1000000",
+    "do_probabilistic":"true",
+    "do_deterministic":"true",
+    "do_tensor":"true"
+}

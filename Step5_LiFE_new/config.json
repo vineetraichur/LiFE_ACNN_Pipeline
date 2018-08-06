@@ -1,0 +1,8 @@
+{ 
+    "t1": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step1_Autoalign/t1.nii.gz",
+    "dwi": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step2_RemoveArtifacts/dwi_aligned_trilin_noMEC.nii.gz",
+    "bvecs": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step2_RemoveArtifacts/dwi_aligned_trilin_noMEC.bvecs",
+    "bvals": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step2_RemoveArtifacts/dwi_aligned_trilin_noMEC.bvals",
+    "life_discretization": 360,
+    "num_iterations": 500
+}

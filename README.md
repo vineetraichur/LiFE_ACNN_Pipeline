@@ -8,6 +8,8 @@ Step 3, parcellate the brain: https://github.com/brain-life/app-freesurfer
 Step 4, apply tractography algorithms: https://github.com/brain-life/app-tracking    
 Step 5, run Linear fascicle evaluation (LiFE): https://github.com/brain-life/app-life 
 
+Sample data can be found here - https://brainlife.io/pub/5a0f0fad2c214c9ba8624376
+
 Laboratory of Neuro Imaging (LONI) - http://pipeline.loni.usc.edu/  
 This tool has been developed in the LONI Pipeline workflow application. The LONI Pipeline is an application that allows users to easily describe their programs in a graphical user interface. Using the application's built-in features, users can create and execute complex workflows with relative ease. 
 

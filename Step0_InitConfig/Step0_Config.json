@@ -1,0 +1,16 @@
+{
+	"t1": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/BLSubj1_Data/Anatomy/t1.nii.gz",
+	"coords": [
+		[0,0,0],
+		[0,-16,0],
+		[0,-8,40]
+	],
+	"dwi": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/BLSubj1_Data/Diffusion/dwi.nii.gz",
+	"bvecs": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/BLSubj1_Data/Diffusion/dwi.bvecs",
+	"bvals": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/BLSubj1_Data/Diffusion/dwi.bvals",
+	"MNI_template": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Libraries/life-vistasoft-master/mrDiffusion/templates/MNI_T1.nii.gz",
+	"eddyCorrect": 1,
+	"rotateBvecsWithRx": "false",
+	"rotateBvecsWithCanXform": "false",
+	"resolution": "default"
+}

@@ -5,41 +5,29 @@ cd /ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSu
 
 export mrtrix_HOME=/usr/local/mrtrix-0.2.12/bin
 export FREESURFER_HOME=/usr/local/freesurfer-6
-export MATLABPATH=/usr/local/MATLAB/R2015b/bin
+export MATLABPATH=/usr/local/MATLAB/R2018a/bin
+#module load python
 
 BGRAD="grad.b"
 
 config_json=$1
-readarray -t values < <(awk -F\" 'NF>=3 {print $4}' $config_json)
-
-input_nii_gz=${values[10]}
-BVECS=${values[9]}
-BVALS=${values[8]}
+input_nii_gz=`jq -r '.trilin_nii' $config_json`
+BVECS=`jq -r '.trilin_bvecs' $config_json`
+BVALS=`jq -r '.trilin_bvals' $config_json`
 
 echo $input_nii_gz
-echo $BVECS
-echo $BVECS
 
-input_nii_gz=/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step2_RemoveArtifacts/dwi_aligned_trilin_noMEC.nii.gz
-BVECS=/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step2_RemoveArtifacts/dwi_aligned_trilin_noMEC.bvecs
-BVALS=/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step2_RemoveArtifacts/dwi_aligned_trilin_noMEC.bvals
+wm_nii_gz=$2 #input from freesurfer
 
-echo $input_nii_gz
-echo $BVECS
-echo $BVECS
-
-wm_nii_gz=$2 #input from mri_convert module
+echo $wm_nii_gz
 
 tract_param=$3
-# jq is a much better tool to process json files - need to update
-readarray -t values < <(awk -F\" 'NF>=3 {print $4}' $tract_param)
-
-LMAX=${values[5]}
-NUMFIBERS=${values[6]}
-MAXNUMFIBERSATTEMPTED=${values[7]}
-DOPROB=${values[8]}
-DOSTREAM=${values[9]}
-DOTENSOR=${values[10]}
+LMAX=`jq -r '.lmax' $tract_param`
+NUMFIBERS=`jq -r '.fibers' $tract_param`
+MAXNUMFIBERSATTEMPTED=`jq -r '.fibers_max' $tract_param`
+DOPROB=`jq -r '.do_probabilistic' $tract_param`
+DOSTREAM=`jq -r '.do_deterministic' $tract_param`
+DOTENSOR=`jq -r '.do_tensor' $tract_param`
 
 echo $LMAX
 
@@ -53,53 +41,58 @@ track_tens_tck=$6
 
 #TODO - validate other fields?
 #if [ $LMAX == "null" ]; then
-#    echo "lmax is empty.. calculating max lmax to use #from .bvals"
-#	LMAX=$(python $SERVICE_DIR/calculatelmax.py)
+#    echo "lmax is empty.. calculating max lmax to use from .bvals"
+#	LMAX=$(python calculatelmax.py)
 #fi
+#
 #echo "Using LMAX: $LMAX"
 
-#echo "input_nii_gz:$input_nii_gz"
-#echo "BGRAD:$BGRAD"
+###################################################################################################
+#generate grad.b from bvecs/bvals
+#dtiinit=`jq -r '.dtiinit' config.json`
+#export input_nii_gz=$dtiinit/`jq -r '.files.alignedDwRaw' $dtiinit/dt6.json`
+#export BVECS=$dtiinit/`jq -r '.files.alignedDwBvecs' $dtiinit/dt6.json`
+#export BVALS=$dtiinit/`jq -r '.files.alignedDwBvals' $dtiinit/dt6.json`
+
+#load bvals/bvecs
+bvals=$(cat $BVALS)
+bvecs_x=$(cat $BVECS | head -1)
+bvecs_y=$(cat $BVECS | head -2 | tail -1)
+bvecs_z=$(cat $BVECS | tail -1)
+
+#convert strings to array of numbers
+bvecs_x=($bvecs_x)
+bvecs_y=($bvecs_y)
+bvecs_z=($bvecs_z)
+
+#output grad.b
+i=0
+true > grad.b
+for bval in $bvals; do
+    echo ${bvecs_x[$i]} ${bvecs_y[$i]} ${bvecs_z[$i]} $bval >> grad.b
+    i=$((i+1))
+done
 
 ###################################################################################################
-#
-# convert .bvals .bvecs into a single .b
-#
-# sample .bvals
-# 2000 2001 2002 2003 2004
-# sample .bvecs
-# 1 4 7 10 13
-# 2 5 8 11 14
-# 3 6 9 12 15
-# sample output grad.b
-# 1 2 3 2000
-# 4 5 6 2001
-# 7 8 9 2002
-# 10 11 12 2003
-# 13 14 15 2003
+# Generate white matter mask (wm.mii.gz) from t1(freesurfer output [mri/aseg.mgz]) used by tracking later 
 
-## transpose output w/ original at the top
-cat $BVECS $BVALS | tr ',' ' ' | awk '
-{ 
-   for (i=1; i<=NF; i++)  {
-       a[NR,i] = $i
-   }
-}
-NF>p { p = NF }
-END {    
-   for(j=1; j<=p; j++) {
-       str=a[1,j]
-       for(i=2; i<=NR; i++){
-           str=str" "a[i,j];
-       }
-       print str
-   }
-}' > $BGRAD
-#
-###################################################################################################
+if [ ! -f wm.nii.gz ]; then
+        echo "starting matlab to create wm.nii.gz"
+        time matlab -nodisplay -nosplash -r "make_wm_mask $wm_nii_gz"
+fi
 
-###################################################################################################
-# This could be moved out of here and processed by a dedicated preprocessing (mrconvert) service 
+echo "converting wm.nii.gz to wm.mif"
+if [ -f wm.mif ]; then
+    echo "wm.mif already exist... skipping"
+else
+    time $mrtrix_HOME/mrconvert --quiet wm.nii.gz wm.mif
+    ret=$?
+    if [ ! $ret -eq 0 ]; then
+        echo "failed to mrconver wm.nii.gz to wm.mif"
+        echo $ret > finished
+        exit $ret
+    fi
+fi
 
 echo "converting dwi input to mif (should take a few minutes)"
 if [ -f dwi.mif ]; then
@@ -170,19 +163,6 @@ else
 fi
 
 ###################################################################################################
-
-# Generate white matter mask (wm.mii.gz) from t1(freesurfer output [mri/aseg.mgz]) used by tracking later 
-#export MATLABPATH=$MATLABPATH:$SERVICE_DIR
-#time matlab -nodisplay -nosplash -r main
-
-echo "converting wm.nii.gz to wm.mif"
-if [ -f wm.mif ]; then
-    echo "wm.mif already exist... skipping"
-else
-    time $mrtrix_HOME/mrconvert --quiet $wm_nii_gz wm.mif
-fi
-
-###################################################################################################
 # tensor tracking (DT_STREAM)
 
 if [ $DOTENSOR == "true" ] ; then
@@ -244,17 +224,14 @@ fi
 curl -s -X POST -H "Content-Type: application/json" -d "{\"progress\": 1, \"status\": \"finished\"}" $progress_url > /dev/null
 
 ###################################################################################################
-
-#matlab -nodisplay -nosplash -nodesktop -r "tck2mat_pipe $track_prob $track_det $track_tens"
-#if [ -f output.DT_STREAM.mat ] && [ -f output.SD_STREAM.mat ] && [ -f output.SD_PROB.mat ];
-#then 
-#   echo "all done"
-#   echo 0 > finished
-#else 
-#   echo ".mat files missing"
-#   echo 1 > finished
-#   exit 1
-#fi
+# convert various mif files to .nii.gz to generate neuro/dwi/recon (Diffusion Signal Voxel Reconstruction Model) data product
+#response.txt > same
+echo "creating neuro/dwi/recon datatype"
+$mrtrix_HOME/mrconvert lmax.mif csd.nii.gz
+$mrtrix_HOME/mrconvert fa.mif fa.nii.gz
+$mrtrix_HOME/mrconvert dt.mif dt.nii.gz
+$mrtrix_HOME/mrconvert wm.mif whitematter.nii.gz
+$mrtrix_HOME/mrconvert brainmask.mif brainmask.nii.gz
 
 echo "all done"
 echo 0 > finished

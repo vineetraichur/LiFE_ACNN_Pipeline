@@ -49,7 +49,10 @@ cd([cran_dir '/Step1_Autoalign'])
 % % mrAnatAverageAcpcNifti(ni, 't1.nii.gz', ImageCoords, [], [], [], false);
 % mrAnatAverageAcpcNifti(ni, t1_1out, ImageCoords, [], [], [], false);
 
-%% Test
+%% Placeholder Step 1 - when t1 doesn't need to be aligned
+% t1 file is the sample data currently being used in aligned. This is only a placeholder step. 
+% It is reading the t1 file passing it to step 2 as is
+
 % load my own config.json
 % load (pipe_config_in, '-mat')
 config = loadjson(pipe_config_in);

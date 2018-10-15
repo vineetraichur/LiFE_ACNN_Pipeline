@@ -5,7 +5,6 @@ function [fe, out] = life(config, track_tck)
 % LiFE distributed under the encode toolbox
 %
 % Franco Pestilli, Indiana University, frakkopesto@gmail.com.
-%
 
 disp('running feConnectomeInit');
 % fe = feConnectomeInit(aligned_dwi, ...

@@ -4,5 +4,5 @@
     "bvecs": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step2_RemoveArtifacts/dwi_aligned_trilin.bvecs",
     "bvals": "/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLSubj1/Step2_RemoveArtifacts/dwi_aligned_trilin.bvals",
     "life_discretization": 360,
-    "num_iterations": 100
+    "num_iterations": 500
 }

@@ -65,7 +65,13 @@ mkdir('tracts')
 savejson('', connectome, fullfile('tracts', 'subsampledtracts.json'));
 
 %for old stats graph (lifestats)
-out.life = [];
+% % Data needed for rmse scatter plot is deleted % %
+% out.life = [];
+
+% % Saving out.life.rmse but deleting other unnecessary fields
+out.life.w = [];
+out.life.fg = [];
+
 % savejson('out',  out,      'life_results.json');
 savejson('out',  out,  output_json);
 

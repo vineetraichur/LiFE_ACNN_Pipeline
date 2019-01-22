@@ -1,5 +1,5 @@
 
-function [] = main(config_json, track_tck, plotdata_json, output_fe, output_json, out_product_json)
+function [] = main(data_config_in, config_json, track_tck, output_fe, output_json)
 
 % if ~isdeployed
 %     switch getenv('ENV')
@@ -24,14 +24,17 @@ cd('/ifs/loni/ccb/collabs/2017/ACNN/VineetRaichur_LiFE/LiFE_Pipeline_Cranium_BLS
 
 % load my own config.json
 % config = loadjson('config.json')
-config = loadjson(config_json)
+config = loadjson(config_json);
+
+% load data json file
+data_config = loadjson(data_config_in);
 
 % disp('loading dt6.mat')
 % dt6 = loadjson(fullfile(config.dtiinit, 'dt6.json'))
 % aligned_dwi = fullfile(config.dtiinit, dt6.files.alignedDwRaw)
 
 % [ fe, out ] = life(config, aligned_dwi);
-[ fe, out ] = life(config, track_tck);
+[ fe, out ] = life(data_config.trilin_dwi, config, track_tck);
 
 out.stats.input_tracks = length(fe.fg.fibers);
 out.stats.non0_tracks = length(find(fe.life.fit.weights > 0));
@@ -76,87 +79,87 @@ out.life.fg = [];
 savejson('out',  out,  output_json);
 
 %% extra code in new branch of LiFE
-disp('creating product.json')
-mat1 = out.plot(1);
-mat2 = out.plot(2);
-
-plot1 = struct;
-plot1.data = struct;
-plot1.layout = struct;
-plot1.type = 'plotly';
-plot1.name = mat1.title;
-
-plot1.data.x = mat1.x.vals;
-plot1.data.y = mat1.y.vals;
-plot1.data = {plot1.data};
-
-%plot1.layout.title = mat1.title;
-
-plot1.layout.xaxis = struct;
-plot1.layout.xaxis.title = mat1.x.label;
-plot1.layout.xaxis.type = mat1.x.scale;
-
-plot1.layout.yaxis = struct;
-plot1.layout.yaxis.title = mat1.y.label;
-plot1.layout.yaxis.type = mat1.y.scale;
-
-plot2 = struct;
-plot2.data = struct;
-plot2.layout = struct;
-plot2.type = 'plotly';
-plot2.name = mat2.title;
-
-plot2.data.x = mat2.x.vals;
-plot2.data.y = mat2.y.vals;
-plot2.data = {plot2.data};
-
-plot2.layout.xaxis = struct;
-plot2.layout.xaxis.title = mat2.x.label;
-plot2.layout.xaxis.type = mat2.x.scale;
-
-plot2.layout.yaxis = struct;
-plot2.layout.yaxis.title = mat2.y.label;
-plot2.layout.yaxis.type = mat2.y.scale;
-
-plot3 = struct;
-% plotdata = loadjson('plotdata.json'); 
-plotdata = loadjson(plotdata_json); 
-plot3.data = plotdata.data;
-plot3.layout = plotdata.layout;
-plot3.type = 'plotly';
-plot3.name = 'Connectome Evaluation';
-marker = struct;
-marker.mode = 'markers';
-marker.name = 'Your Data';
-rmse = nanmean(feGet(fe,'voxrmses0norm'));
-density = feGet(fe,'connectome density');
-marker.x = { rmse };
-marker.y = { density };
-marker.marker = struct;
-marker.marker.sizemode = 'area';
-marker.marker.size = 20;
-marker.marker.opacity = 0.9;
-marker.marker.color = '#008cba';
-plot3.data{end+1} = marker;
-
-textual_output = struct;
-textual_output.type = 'info';
-textual_output.msg = strcat('Fibers with non-0 evidence: ', ...
-    num2str(out.stats.non0_tracks), ' out of ', ...
-    num2str(out.stats.input_tracks), ' total tracks (', ...
-    num2str(out.stats.non0_tracks/out.stats.input_tracks*100), '% -- it should be between 20%-30%)');
-%textual_output.msg = textual_output.msg{1};
-
-product_json = struct;
-product_json.brainlife = {plot1, plot2, plot3, textual_output};
-
-%also store some important info 
-product_json.life = out.stats;
-product_json.life.rmse = rmse;
-product_json.life.density = density;
-
-% savejson('', product_json, 'product.json'); 
-savejson('', product_json, out_product_json); 
+% disp('creating product.json')
+% mat1 = out.plot(1);
+% mat2 = out.plot(2);
+% 
+% plot1 = struct;
+% plot1.data = struct;
+% plot1.layout = struct;
+% plot1.type = 'plotly';
+% plot1.name = mat1.title;
+% 
+% plot1.data.x = mat1.x.vals;
+% plot1.data.y = mat1.y.vals;
+% plot1.data = {plot1.data};
+% 
+% %plot1.layout.title = mat1.title;
+% 
+% plot1.layout.xaxis = struct;
+% plot1.layout.xaxis.title = mat1.x.label;
+% plot1.layout.xaxis.type = mat1.x.scale;
+% 
+% plot1.layout.yaxis = struct;
+% plot1.layout.yaxis.title = mat1.y.label;
+% plot1.layout.yaxis.type = mat1.y.scale;
+% 
+% plot2 = struct;
+% plot2.data = struct;
+% plot2.layout = struct;
+% plot2.type = 'plotly';
+% plot2.name = mat2.title;
+% 
+% plot2.data.x = mat2.x.vals;
+% plot2.data.y = mat2.y.vals;
+% plot2.data = {plot2.data};
+% 
+% plot2.layout.xaxis = struct;
+% plot2.layout.xaxis.title = mat2.x.label;
+% plot2.layout.xaxis.type = mat2.x.scale;
+% 
+% plot2.layout.yaxis = struct;
+% plot2.layout.yaxis.title = mat2.y.label;
+% plot2.layout.yaxis.type = mat2.y.scale;
+% 
+% plot3 = struct;
+% % plotdata = loadjson('plotdata.json'); 
+% plotdata = loadjson(plotdata_json); 
+% plot3.data = plotdata.data;
+% plot3.layout = plotdata.layout;
+% plot3.type = 'plotly';
+% plot3.name = 'Connectome Evaluation';
+% marker = struct;
+% marker.mode = 'markers';
+% marker.name = 'Your Data';
+% rmse = nanmean(feGet(fe,'voxrmses0norm'));
+% density = feGet(fe,'connectome density');
+% marker.x = { rmse };
+% marker.y = { density };
+% marker.marker = struct;
+% marker.marker.sizemode = 'area';
+% marker.marker.size = 20;
+% marker.marker.opacity = 0.9;
+% marker.marker.color = '#008cba';
+% plot3.data{end+1} = marker;
+% 
+% textual_output = struct;
+% textual_output.type = 'info';
+% textual_output.msg = strcat('Fibers with non-0 evidence: ', ...
+%     num2str(out.stats.non0_tracks), ' out of ', ...
+%     num2str(out.stats.input_tracks), ' total tracks (', ...
+%     num2str(out.stats.non0_tracks/out.stats.input_tracks*100), '% -- it should be between 20%-30%)');
+% %textual_output.msg = textual_output.msg{1};
+% 
+% product_json = struct;
+% product_json.brainlife = {plot1, plot2, plot3, textual_output};
+% 
+% %also store some important info 
+% product_json.life = out.stats;
+% product_json.life.rmse = rmse;
+% product_json.life.density = density;
+% 
+% % savejson('', product_json, 'product.json'); 
+% savejson('', product_json, out_product_json); 
 
 disp('all done')
 
